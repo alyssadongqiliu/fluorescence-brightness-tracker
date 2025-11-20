@@ -183,10 +183,19 @@ class BrightnessAnalyzer:
             mode='valid'
         )
         
-        # Linear regression on smoothed data
+        # Linear regression on smoothed data with error handling
         x = np.arange(len(smoothed))
-        coeffs = np.polyfit(x, smoothed, 1)
-        slope = coeffs[0]
+        try:
+            coeffs = np.polyfit(x, smoothed, 1)
+            slope = coeffs[0]
+        except (np.linalg.LinAlgError, ValueError):
+            # If fitting fails, return no bleaching
+            return {
+                'slope': 0.0,
+                'is_bleaching': False,
+                'half_life_frames': None,
+                'smoothed_brightness': smoothed
+            }
         
         # Estimate half-life if bleaching
         is_bleaching = slope < 0

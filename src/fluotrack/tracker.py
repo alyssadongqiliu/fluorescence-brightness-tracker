@@ -146,11 +146,15 @@ class BrightnessTracker:
             - 'bbox': (x, y, w, h) bounding box
             - 'area': contour area
         """
-        # Adaptive thresholding
-        thresh = cv2.adaptiveThreshold(
-            frame, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-            cv2.THRESH_BINARY, 11, 2
+        # Use Otsu's thresholding for better multi-region detection
+        _, thresh = cv2.threshold(
+            frame, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
         )
+        
+        # Morphological operations to clean up
+        kernel = np.ones((3, 3), np.uint8)
+        thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+        thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
         
         # Find contours
         contours, _ = cv2.findContours(

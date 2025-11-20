@@ -105,8 +105,9 @@ class TestBrightnessAnalyzer:
             f.write('timestamp,frame_number,x,y,brightness,notes\n')
             
             # Generate synthetic photobleaching data
+            base_time = pd.Timestamp('2025-01-17 12:00:00')
             for i in range(100):
-                timestamp = f'2025-01-17T12:00:{i:02d}'
+                timestamp = (base_time + pd.Timedelta(seconds=i)).isoformat()
                 brightness = 255 * np.exp(-i * 0.01)  # Exponential decay
                 x = 100 + np.random.randint(-5, 6)
                 y = 100 + np.random.randint(-5, 6)
