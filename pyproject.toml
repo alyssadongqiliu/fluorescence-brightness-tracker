@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fluotrack"
+version = "0.1.0"
+description = "Real-time fluorescence brightness tracking for microscopy"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Alyssa [Your Last Name]", email = "your.email@unc.edu"}
+]
+maintainers = [
+    {name = "Alyssa [Your Last Name]", email = "your.email@unc.edu"}
+]
+keywords = [
+    "fluorescence",
+    "microscopy", 
+    "image-analysis",
+    "brightness-tracking",
+    "bioimaging"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "numpy>=1.20.0",
+    "opencv-python>=4.5.0",
+    "Pillow>=8.0.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.3.0",
+    "openpyxl>=3.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=3.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.950",
+    "sphinx>=4.5.0",
+    "sphinx-rtd-theme>=1.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/[your-username]/fluotrack"
+Documentation = "https://fluotrack.readthedocs.io"
+Repository = "https://github.com/[your-username]/fluotrack"
+"Bug Tracker" = "https://github.com/[your-username]/fluotrack/issues"
+
+[project.scripts]
+fluotrack = "fluotrack.app:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "--cov=fluotrack --cov-report=html --cov-report=term"
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
