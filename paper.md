@@ -192,7 +192,7 @@ While TrackMate [@Tinevez2017] provides sophisticated tracking with extensive cu
 
 # Availability and Documentation
 
-`FluoTrack` is released under the MIT license and is available on GitHub at https://github.com/[your-username]/fluorescence-brightness-tracker with archived versions on Zenodo (DOI: 10.5281/zenodo.XXXXX). The package can be installed via pip:
+`FluoTrack` is released under the MIT license and is available on GitHub at https://github.com/alyssadongqiliu/fluorescence-brightness-tracker with archived versions on Zenodo (archive_doi: 10.5281/zenodo.17656657). The package can be installed via pip:
 
 ```bash
 pip install fluotrack

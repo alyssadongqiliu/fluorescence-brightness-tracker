@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17656657.svg)](https://doi.org/10.5281/zenodo.17656657)
 # FluoTrack: Multi-Target Fluorescence Tracker
 
 Automated multi-target fluorescence tracking with adaptive detection and the Hungarian algorithm.
