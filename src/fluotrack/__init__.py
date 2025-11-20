@@ -14,9 +14,9 @@ from .analysis import DataLogger, BrightnessAnalyzer
 from .app import FluoTrackApp
 
 __all__ = [
-    'BrightnessTracker',
-    'RegionSelector',
-    'DataLogger',
-    'BrightnessAnalyzer',
-    'FluoTrackApp'
+    "BrightnessTracker",
+    "RegionSelector",
+    "DataLogger",
+    "BrightnessAnalyzer",
+    "FluoTrackApp",
 ]
