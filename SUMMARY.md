@@ -136,7 +136,7 @@ The included `paper.md` covers:
 ### 1. **Update Personal Info** (5 minutes)
 Replace placeholders with your actual information:
 - Your full name
-- Your email (your.email@unc.edu → actual email)
+- Your email (dongql@unc.edu)
 - Your ORCID ID (get free at orcid.org)
 
 **Files to update:**
@@ -154,7 +154,7 @@ git init
 git add .
 git commit -m "Initial commit for JOSS submission"
 git branch -M main
-git remote add origin https://github.com/[your-username]/fluotrack.git
+git remote add origin https://github.com/alyssadongqiliu/fluotrack.git
 git push -u origin main
 
 # Tag release
@@ -256,8 +256,8 @@ All of these are valuable for PhD applications and your research career!
 
 ## 📞 Contact
 
-**Developer:** Alyssa [Your Last Name]
-**Email:** your.email@unc.edu
+**Developer:** Dongqi Liu
+**Email:** dongql@unc.edu
 **Lab:** Bloom Lab, UNC Chapel Hill
 **GitHub:** (to be added)
 

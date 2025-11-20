@@ -49,131 +49,37 @@ Existing tools have significant limitations. ImageJ/Fiji [@Schindelin2012] and i
 
 These capabilities make `FluoTrack` particularly valuable for applications including FRAP (fluorescence recovery after photobleaching) experiments with multiple bleach spots, protein translocation studies, chromatin dynamics analysis, and any research requiring simultaneous tracking and quantification of multiple fluorescent targets.
 
-# Features
-
-`FluoTrack` provides a comprehensive toolkit for multi-target fluorescence tracking and analysis:
-
-**Detection and Tracking:**
+# Key Features
 
 - Adaptive multi-spot detection using robust statistical methods (median/MAD-based thresholding)
 - Hungarian algorithm for optimal frame-to-frame spot assignment
-- Automatic handling of spot appearances, disappearances, and temporary occlusions
-- Unique ID assignment maintained throughout tracking duration
-- Configurable parameters (spot size range, sensitivity, tracking distance threshold)
-
-**Quantitative Analysis:**
-
-- Per-spot photobleaching detection with exponential decay fitting and half-life estimation
+- Automatic handling of spot appearances, disappearances, and photobleaching
+- Per-spot photobleaching quantification with half-life estimation
 - Trajectory analysis: displacement, velocity, confinement radius
-- Population-level statistics: mean intensity, standard deviation, collective dynamics
-- Quality metrics for each detection (signal-to-noise ratio, confidence scores)
-
-**Data Management:**
-
-- Automated export to CSV format compatible with standard analysis software
-- Complete trajectory histories with frame-by-frame positions and intensities
-- Summary statistics tables for individual spots and population ensembles
-
-**Visualization:**
-
-- Real-time tracking visualization with color-coded trajectories
-- Publication-ready multi-panel plots showing individual and population trends
-- Trajectory maps with start/end position markers
-- Customizable plot styling and high-resolution export
+- Population-level statistics and dual-level (individual + ensemble) analysis
+- Automated CSV export and publication-ready visualization
 
 # Implementation
 
-`FluoTrack` is implemented in Python 3.8+ and built on established scientific computing libraries. The core architecture consists of three modular components:
+`FluoTrack` is implemented in Python 3.8+ using NumPy [@Harris2020], OpenCV [@Bradski2000], SciPy [@Virtanen2020], Matplotlib [@Hunter2007], and Pandas [@McKinney2010]. The modular architecture consists of three components:
 
-## Detection Module
+**Detection:** Uses median and Median Absolute Deviation (MAD) for robust spot detection, adapting to varying background levels without manual parameter tuning.
 
-The `AdaptiveSpotDetector` class employs a robust statistical approach that adapts to local image characteristics. Rather than using mean and standard deviation (sensitive to outliers), the algorithm uses median and Median Absolute Deviation (MAD) to establish detection thresholds:
+**Tracking:** Implements the Hungarian algorithm [@Kuhn1955; @Munkres1957] for optimal spot-to-track assignment between frames, minimizing total distance while handling spot appearances and disappearances.
 
-$$\text{threshold} = \text{median}(I) + \alpha \cdot 1.4826 \cdot \text{MAD}(I)$$
-
-where $I$ is the image intensity distribution, $\alpha$ is the user-configurable sensitivity parameter (default: 2.0 standard deviations), and the factor 1.4826 converts MAD to an estimator of standard deviation for normally distributed data. This approach is robust to intensity outliers and varying background levels.
-
-Detected regions undergo morphological operations (opening and closing with elliptical kernels) to remove noise while preserving true spot boundaries. Candidate spots are filtered by area (configurable minimum and maximum) to eliminate artifacts while retaining biologically relevant fluorescent signals. For each detected spot, the algorithm computes location (centroid of maximum intensity region), mean intensity, maximum intensity, and area.
-
-## Tracking Module
-
-The `MultiTargetTracker` class implements frame-to-frame association using the Hungarian algorithm [@Kuhn1955; @Munkres1957] to solve the optimal assignment problem. Given $n$ existing tracks and $m$ newly detected spots in the current frame, the algorithm constructs a cost matrix $C \in \mathbb{R}^{n \times m}$ where $C_{ij}$ represents the Euclidean distance between track $i$'s last known position and spot $j$'s current position:
-
-$$C_{ij} = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}$$
-
-The Hungarian algorithm finds the optimal assignment $\pi: \{1,\ldots,n\} \to \{1,\ldots,m\}$ that minimizes total cost:
-
-$$\min_{\pi} \sum_{i=1}^{n} C_{i,\pi(i)}$$
-
-This guarantees optimal assignments even in crowded fields where simple nearest-neighbor approaches fail. Spots with assignment costs exceeding a user-defined distance threshold (default: 50 pixels) spawn new tracks. Tracks not assigned to any detection for five consecutive frames are automatically terminated, allowing graceful handling of spots that permanently disappear due to complete photobleaching or movement out of the field of view.
-
-## Analysis Module
-
-Individual spot analysis includes linear regression on intensity versus frame number to detect photobleaching trends. Spots with negative slopes exceeding -0.5 intensity units per frame are flagged as photobleaching. For these spots, half-life is estimated assuming exponential decay:
-
-$$I(t) = I_0 e^{-kt}$$
-
-where $I_0$ is initial intensity, $k$ is the decay constant (related to the linear regression slope), and $t_{1/2} = \ln(2)/k$.
-
-Trajectory analysis computes:
-
-- Total displacement: sum of frame-to-frame Euclidean distances
-- Mean velocity: total displacement divided by tracking duration
-- Confinement radius: standard deviation of positions from trajectory centroid
-
-Population-level analysis aggregates statistics across all tracks, computing means, standard deviations, and temporal evolution of collective properties. This dual-level analysis enables researchers to quantify both individual spot heterogeneity and ensemble behavior.
-
-The implementation leverages:
-
-- NumPy [@Harris2020] for numerical operations and array manipulations
-- OpenCV [@Bradski2000] for image processing and morphological operations
-- SciPy [@Virtanen2020] for the Hungarian algorithm implementation (`scipy.optimize.linear_sum_assignment`)
-- Matplotlib [@Hunter2007] for visualization and plot generation
-- Pandas [@McKinney2010] for data management and CSV export
-
-The modular design allows researchers to customize detection parameters, tracking constraints, and analysis metrics for specific experimental needs while maintaining a simple, intuitive API.
+**Analysis:** Computes photobleaching half-life via exponential decay fitting, trajectory metrics (displacement, velocity, confinement), and population-level statistics, providing both individual and ensemble insights.
 
 # Validation
 
-We validated `FluoTrack` using synthetic time-lapse data containing multiple fluorescent spots with heterogeneous dynamics. The synthetic dataset consisted of 50 frames of a 256×256 pixel field containing 5 simulated fluorescent spots undergoing:
+`FluoTrack` was validated using synthetic time-lapse data (50 frames, 5 fluorescent spots) with random walk motion, heterogeneous photobleaching, transient disappearances, and realistic noise. The software successfully tracked all spots with no identity switches, correctly identified photobleaching in 5.5% of track segments, and achieved 45 frames/second processing speed on standard hardware. Figures show individual and population-level intensity dynamics (\autoref{fig:intensity}) and spatial trajectories (\autoref{fig:trajectories}).
 
-- Random walk motion (Gaussian displacement with $\sigma = 2$ pixels/frame)
-- Exponential photobleaching with varying rates (decay constants 0.01-0.05 frame$^{-1}$)
-- Transient disappearance/reappearance (2 of 5 spots)
-- Realistic Gaussian background noise ($\mu = 20$, $\sigma = 5$)
+![**Figure 1.** Individual (top) and population-level (bottom) intensity dynamics.\label{fig:intensity}](figures/intensity_trends.png)
 
-**Multi-target detection and tracking:** `FluoTrack` successfully detected and tracked all simulated spots, creating 326 total track segments across the 50-frame sequence. Longer-duration tracks (>5 frames) showed continuous trajectories with no identity switches, demonstrating robust tracking performance.
-
-**Photobleaching detection:** Individual spot analysis correctly identified photobleaching in 18 of 326 tracks (5.5%), consistent with the simulated photobleaching fraction. Estimated intensity decay rates ranged from -0.5 to -5.7 intensity units per frame, accurately capturing the heterogeneous photobleaching dynamics (\autoref{fig:validation}).
-
-**Population-level analysis:** Ensemble analysis revealed mean spot intensity of 23.4 ± 3.8 (mean ± SD) and average velocity of 5.7 pixels/frame, demonstrating the system's ability to extract both individual and collective insights from multi-target data.
-
-**Computational performance:** Processing achieved 45 frames per second on standard hardware (Apple M1, 8GB RAM), enabling efficient analysis of large time-series datasets.
-
-**Figure 1** shows individual and population-level intensity dynamics, while **Figure 2** displays spatial trajectories of tracked spots.
-
-![**Figure 1.** Intensity dynamics over time. **(Top)** Individual spot intensities for the 20 longest tracks showing heterogeneous photobleaching. **(Bottom)** Population-level mean intensity with standard deviation.\label{fig:intensity}](figures/intensity_trends.png)
-
-![**Figure 2.** Multi-target spatial trajectories. Each colored line represents one tracked spot (tracks >5 frames shown). Green circles = start positions, red circles = end positions.\label{fig:trajectories}](figures/trajectories.png)
-
-These validation results demonstrate that `FluoTrack` reliably detects, tracks, and quantifies multiple fluorescent spots with heterogeneous dynamics, providing both individual spot statistics and population-level insights essential for understanding complex cellular processes.
+![**Figure 2.** Multi-target spatial trajectories.\label{fig:trajectories}](figures/trajectories.png)
 
 # Research Applications
 
-`FluoTrack` is designed for fluorescence microscopy workflows including:
-
-- **Multi-spot FRAP experiments:** Simultaneous tracking of multiple photobleached regions with individual recovery kinetics
-- **Protein translocation:** Analyzing nuclear import/export dynamics with multiple fluorescent proteins
-- **Chromatin dynamics:** Tracking multiple genomic loci labeled with different fluorescent markers
-- **Organelle transport:** Quantifying vesicle or mitochondria movement patterns
-- **Optogenetic stimulation:** Monitoring cellular responses across multiple fluorescent reporters
-
-The tool is particularly valuable when researchers need to:
-
-1. **Quantify heterogeneity:** Measure cell-to-cell or spot-to-spot variability in dynamics
-2. **Detect rare events:** Identify infrequent behaviors within populations
-3. **Correlate behaviors:** Analyze relationships between multiple simultaneously-tracked targets
-4. **Validate models:** Compare experimental observations with theoretical predictions
+`FluoTrack` supports multi-spot FRAP experiments, protein translocation studies, chromatin dynamics, organelle transport, and optogenetic stimulation monitoring. It enables quantification of heterogeneity, detection of rare events, correlation of multi-target behaviors, and model validation.
 
 # Comparison with Existing Tools
 
@@ -190,15 +96,9 @@ The tool is particularly valuable when researchers need to:
 
 While TrackMate [@Tinevez2017] provides sophisticated tracking with extensive customization options, it requires significant expertise for parameter optimization. CellProfiler [@Carpenter2006] excels at high-throughput cellular phenotyping but is not optimized for sub-cellular spot tracking. `FluoTrack` fills a niche by providing automated, easy-to-use multi-target tracking with built-in photobleaching analysis and dual-level (individual + population) statistics.
 
-# Availability and Documentation
+# Availability
 
-`FluoTrack` is released under the MIT license and is available on GitHub at https://github.com/alyssadongqiliu/fluorescence-brightness-tracker with archived versions on Zenodo (archive_doi: 10.5281/zenodo.17656657). The package can be installed via pip:
-
-```bash
-pip install fluotrack
-```
-
-Comprehensive documentation, including installation instructions, API reference, tutorials, and example datasets, is available at https://fluotrack.readthedocs.io. The `examples/` directory contains complete validation scripts allowing full reproduction of the results presented here.
+`FluoTrack` is available on GitHub (https://github.com/alyssadongqiliu/fluorescence-brightness-tracker) and archived on Zenodo (DOI: 10.5281/zenodo.17656657) under the MIT license. Documentation and validation scripts are included in the repository.
 
 # Acknowledgments
 

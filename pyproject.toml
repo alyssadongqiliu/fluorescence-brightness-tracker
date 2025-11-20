@@ -10,10 +10,10 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Alyssa [Your Last Name]", email = "your.email@unc.edu"}
+    {name = "Dongqi Liu", email = "dongql@unc.edu"}
 ]
 maintainers = [
-    {name = "Alyssa [Your Last Name]", email = "your.email@unc.edu"}
+    {name = "Dongqi Liu", email = "dongql@unc.edu"}
 ]
 keywords = [
     "fluorescence",
@@ -57,10 +57,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/[your-username]/fluotrack"
+Homepage = "https://github.com/alyssadongqiliu/fluotrack"
 Documentation = "https://fluotrack.readthedocs.io"
-Repository = "https://github.com/[your-username]/fluotrack"
-"Bug Tracker" = "https://github.com/[your-username]/fluotrack/issues"
+Repository = "https://github.com/alyssadongqiliu/fluotrack"
+"Bug Tracker" = "https://github.com/alyssadongqiliu/fluotrack/issues"
 
 [project.scripts]
 fluotrack = "fluotrack.app:main"

@@ -123,7 +123,7 @@ def test_find_brightest_point_with_single_spot():
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/[your-username]/fluotrack.git
+   git clone https://github.com/alyssadongqiliu/fluotrack.git
    cd fluotrack
    ```
 

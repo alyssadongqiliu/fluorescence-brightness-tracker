@@ -19,8 +19,8 @@ Replace placeholders in these files:
 
 ```bash
 # Quick find-and-replace (adjust names as needed)
-grep -r "Alyssa \[Your Last Name\]" . --exclude-dir=.git
-grep -r "your.email@unc.edu" . --exclude-dir=.git
+grep -r "Dongqi Liu" . --exclude-dir=.git
+grep -r "dongql@unc.edu" . --exclude-dir=.git
 ```
 
 ## Step 2: GitHub Repository (10 minutes)
@@ -39,7 +39,7 @@ git init
 git add .
 git commit -m "Initial commit: FluoTrack for JOSS submission"
 git branch -M main
-git remote add origin https://github.com/[your-username]/fluotrack.git
+git remote add origin https://github.com/alyssadongqiliu/fluotrack.git
 git push -u origin main
 ```
 
@@ -182,7 +182,7 @@ python -m venv test_install
 source test_install/bin/activate
 
 # Install from GitHub
-pip install git+https://github.com/[your-username]/fluotrack.git
+pip install git+https://github.com/alyssadongqiliu/fluotrack.git
 
 # Try to run
 python -c "from fluotrack import BrightnessTracker; print('Success!')"
@@ -194,8 +194,8 @@ python -c "from fluotrack import BrightnessTracker; print('Success!')"
 1. Visit https://joss.theoj.org/
 2. Click "Submit a paper"
 3. Log in with GitHub
-4. Fill in the form:
-   - **Repository URL**: https://github.com/[your-username]/fluotrack
+3. Fill in the form:
+   - **Repository URL**: https://github.com/alyssadongqiliu/fluotrack
    - **Version**: v0.1.0
    - **Archive DOI**: Your Zenodo DOI
    - **Software license**: MIT
@@ -263,7 +263,7 @@ You can always add examples and improve documentation during the review process.
 Check GitHub issues daily for reviewer comments:
 ```bash
 # Set up email notifications
-# Go to https://github.com/[your-username]/fluotrack/settings/notifications
+# Go to https://github.com/alyssadongqiliu/fluotrack/settings/notifications
 ```
 
 ### Responding to Reviews
