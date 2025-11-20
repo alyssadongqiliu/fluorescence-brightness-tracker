@@ -74,7 +74,6 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "--cov=fluotrack --cov-report=html --cov-report=term"
 
 [tool.black]
 line-length = 88
