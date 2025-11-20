@@ -197,6 +197,9 @@ class TestBrightnessAnalyzer:
             assert 'Statistics' in sheets
             assert 'Photobleaching' in sheets
             assert 'Trajectory' in sheets
+            
+            # Close the file to release lock on Windows
+            excel_file.close()
 
 
 def test_end_to_end_workflow():
